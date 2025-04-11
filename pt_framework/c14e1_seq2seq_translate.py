@@ -24,7 +24,7 @@ MAX_LENGTH = 60
 SRC_DEST_FILE_NAME = '../data/deu.txt'
 
 # A simple tokenizer and helper functions.
-def text_to_word_sequence(text):
+def text_to_word_sequence(text): # {{{
     # Convert text to lowercase and split on word characters.
     return re.findall(r'\w+', text.lower())
 
@@ -57,14 +57,16 @@ class SimpleTokenizer:
         for word in tokens:
             seq.append(self.word_index.get(word, OOV_INDEX))
         return seq
+# }}}
 
-def tokenize(sequences):
+def tokenize(sequences): # {{{
     tokenizer = SimpleTokenizer(num_words=MAX_WORDS - 2, oov_token=OOV_WORD)
     tokenizer.fit_on_texts(sequences)
     token_sequences = [tokenizer.texts_to_sequences(seq) for seq in sequences]
     return tokenizer, token_sequences
+# }}}
 
-def pad_sequences(sequences, padding='pre', maxlen=None):
+def pad_sequences(sequences, padding='pre', maxlen=None): # {{{
     if maxlen is None:
         maxlen = max(len(s) for s in sequences)
     padded = []
@@ -78,9 +80,10 @@ def pad_sequences(sequences, padding='pre', maxlen=None):
             seq = seq[:maxlen]
         padded.append(seq)
     return np.array(padded)
+# }}}
 
 # Function to read file.
-def read_file_combined(file_name, max_len):
+def read_file_combined(file_name, max_len): # {{{
     src_word_sequences = []
     dest_word_sequences = []
     with open(file_name, 'r', encoding='utf-8') as file:
@@ -96,9 +99,10 @@ def read_file_combined(file_name, max_len):
             src_word_sequences.append(src_tokens)
             dest_word_sequences.append(dest_tokens)
     return src_word_sequences, dest_word_sequences
+# }}}
 
 # Functions to convert tokens back to words.
-def tokens_to_words(tokenizer, seq):
+def tokens_to_words(tokenizer, seq): # {{{
     word_seq = []
     for index in seq:
         if index == PAD_INDEX:
@@ -112,6 +116,7 @@ def tokens_to_words(tokenizer, seq):
         else:
             word_seq.append(tokenizer.index_word.get(index, OOV_WORD))
     print(word_seq)
+# }}}
 
 # Read file and tokenize.
 src_seq, dest_seq = read_file_combined(SRC_DEST_FILE_NAME, MAX_LENGTH)
